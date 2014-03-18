@@ -1,10 +1,10 @@
 SET(headers
-    daemon.h
+    rpc/rpc.h
 )
 SET(sources
-    daemon.cc
+    rpc/rpc.cc
 )
 
 add_library(compiled OBJECT ${sources} ${headers})
-add_executable(ocmg-rpc-test $<TARGET_OBJECTS:compiled> main.cc)
-target_link_libraries(ocmg-rpc-test ${link_libs} )
+#add_executable(ocmg-rpc-test $<TARGET_OBJECTS:compiled> main.cc)
+#target_link_libraries(ocmg-rpc-test ${link_libs} )
