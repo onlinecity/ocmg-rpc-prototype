@@ -149,16 +149,25 @@ bool RecvReplyBody(const UniqueSocket &socket, std::vector<ReplyType> *out, int3
   return false;
 }
 
-// Send a request with arguments
-// Main request function, out and arguments can be replaced with nullptr if a void reply no arguments is expected
+// Send a request
+// Main request function, out and arguments can be replaced with nullptr if a void reply no arguments is expected.
 // ie.
 //  oc::pb::accounting::Account a;
 //  SendRequest(con.get(), "authenticate", &a, "username", "password");
+//
+// supports various inputs, ie.
 //  std::vector<int> v;
 //  v.push_back(1);
 //  v.push_back(2);
 //  v.push_back(3);
 //  SendRequest(con.get(), "methodName", nullptr, static_cast<int16_t>(1), 42, 6.02e23f, "hello world", a, v);
+//
+// arguments are optional via nullptr or overload, ie.
+//  std::vector<oc::pb::accounting::Account> al;
+//  SendRequest(con.get(), "getAllAccounts", &al);
+//
+// you can even do requests without arguments or replies, ie.
+//  SendRequest(con.get(), "stopService");
 template <class ReplyType, typename Argument, typename... Arguments>
 int32_t SendRequestWithTimeout(ClientConnection *con, const char *method_name, ReplyType *out, int retries, int timeout,
                                const Argument &arg, const Arguments &... args) {
@@ -201,6 +210,13 @@ inline int32_t SendRequest(ClientConnection *con, const char *method_name, Reply
                            const Arguments &... args) {
   return SendRequestWithTimeout(con, method_name, out, default_retries, default_timeout, arg, args...);
 }
+template <class ReplyType>
+inline int32_t SendRequest(ClientConnection *con, const char *method_name, ReplyType *out) {
+  return SendRequestWithTimeout(con, method_name, out, default_retries, default_timeout, nullptr);
+}
+inline int32_t SendRequest(ClientConnection *con, const char *method_name) {
+  return SendRequestWithTimeout<std::nullptr_t>(con, method_name, nullptr, default_retries, default_timeout, nullptr);
+}
 
 // Send a request with arguments expecting void reply
 // ie.
@@ -222,6 +238,8 @@ inline int32_t SendRequestEmptyReply(ClientConnection *con, const char *method_n
 // ie.
 //  int64_t id;
 //  SendEmptyRequest(con.get(), "getId", &id);
+// or if you don't need timeout.
+//  SendRequest(con.get(), "getId", &id);
 template <class ReplyType>
 inline int32_t SendEmptyRequest(ClientConnection *con, const char *method_name, ReplyType *out, int retries,
                                 int timeout) {
@@ -308,5 +326,3 @@ inline void SendReply(const UniqueSocket &socket, const Integral arg) {
 
 }  // namespace rpc
 }  // namespace oc
-
-

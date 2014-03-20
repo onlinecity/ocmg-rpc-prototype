@@ -49,8 +49,8 @@ void SendBody(const UniqueSocket &socket, const void *data, size_t length, bool 
 }
 
 void SendBody(const std::unique_ptr<zmq::socket_t> &socket,
-                   const google::protobuf::MessageLite &arg,
-                   bool send_more) {
+              const google::protobuf::MessageLite &arg,
+              bool send_more) {
   int s = arg.ByteSize();
   zmq::message_t body(s);
   arg.SerializeToArray(body.data(), s);
@@ -70,5 +70,3 @@ void SendReply(const std::unique_ptr<zmq::socket_t> &socket, const void *data, s
 
 }  // namespace rpc
 }  // namespace oc
-
-
