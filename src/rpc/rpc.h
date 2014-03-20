@@ -156,10 +156,7 @@ bool RecvReplyBody(const UniqueSocket &socket, std::vector<ReplyType> *out, int3
 //  SendRequest(con.get(), "authenticate", &a, "username", "password");
 //
 // supports various inputs, ie.
-//  std::vector<int> v;
-//  v.push_back(1);
-//  v.push_back(2);
-//  v.push_back(3);
+//  std::vector<int> v = { 1, 2, 3 };
 //  SendRequest(con.get(), "methodName", nullptr, static_cast<int16_t>(1), 42, 6.02e23f, "hello world", a, v);
 //
 // arguments are optional via nullptr or overload, ie.
@@ -278,11 +275,8 @@ inline void SendReply(const UniqueSocket &socket, const google::protobuf::Messag
 
 // Send a reply with a list of elements, element must be fundamental or protobuf message
 // ie.
-//   std::vector<int> vec;
-//   vec.push_back(1);
-//   vec.push_back(2);
-//   vec.push_back(3);
-//   SendReply(socket, vec.cbegin(), vec.cend(), vec.size());
+//  std::vector<int> vec = { 1, 2, 3 };
+//  SendReply(socket, vec.cbegin(), vec.cend(), vec.size());
 template<class Iter>
 inline void SendReply(const UniqueSocket &socket, Iter first, Iter last, size_t num_args) {
   SendReplyHead(socket, num_args);
