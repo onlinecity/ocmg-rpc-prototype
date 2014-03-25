@@ -16,11 +16,6 @@ endif()
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
-# ocmg-lib
-find_library(OCMG_LIB ocmg REQUIRED)
-find_path(OCMG_LIB_INCLUDE_DIR common.pb.h PATH_SUFFIXES ocmg REQUIRED)
-include_directories(${OCMG_LIB_INCLUDE_DIR})
-
 # Google protobuf
 find_package(Protobuf REQUIRED)
 include_directories(${PROTOBUF_INCLUDE_DIRS})
@@ -40,7 +35,6 @@ find_package(ZeroMQ REQUIRED)
 include_directories(${ZEROMQ_INCLUDE_DIR})
 
 set(link_libs
-    ${OCMG_LIB}
     ${PROTOBUF_LIBRARIES}
     ${GLOG_LIB}
     ${GFLAGS_LIB}

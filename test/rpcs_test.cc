@@ -1,7 +1,6 @@
 #include <gflags/gflags.h>
 #include <glog/logging.h>
 #include <zmq.hpp>
-#include <ocmg/common.pb.h>
 #include "gtest/gtest.h"
 #include <string>
 #include <chrono>
@@ -12,7 +11,6 @@
 namespace {
 
 void rpc() {
-  using oc::pb::common::BlacklistEntry;
   zmq::context_t context(1);
   std::unique_ptr<zmq::socket_t> rep_socket(new zmq::socket_t(context, ZMQ_REP));
   rep_socket->bind("tcp://*:5507");
@@ -22,23 +20,21 @@ void rpc() {
     zmq::message_t head;
     rep_socket->recv(&head);
 
-    LOG(INFO) << "Received head: " << std::basic_string<char>(static_cast<const char *>(head.data()),head.size());
+    LOG(INFO) << "Received head (" << head.size() << "): " << std::basic_string<char>(static_cast<const char *>(head.data()),head.size());
 
-    ASSERT_TRUE(head.more());
-
-    zmq::message_t arg;
-    BlacklistEntry e;
-    do {
-      arg.rebuild();
-      rep_socket->recv(&arg);
-      e.Clear();
-      e.ParseFromArray(arg.data(),arg.size());
-      LOG(INFO) << "Received protobuf: " << e.ShortDebugString();
-    } while(arg.more());
+    if (head.more()) {
+      zmq::message_t arg;
+      do {
+        arg.rebuild();
+        rep_socket->recv(&arg);
+        LOG(INFO) << "Received arg (" << arg.size() << "): " << std::basic_string<char>(static_cast<const char *>(arg.data()),arg.size());
+      } while(arg.more());
+    }
 
     //std::this_thread::sleep_for(std::chrono::seconds(2));
 
-    oc::rpc::SendReply(rep_socket, false);
+    std::vector<int> vec = { 1, 2, 3 };
+    oc::rpc::SendReply(rep_socket, vec.cbegin(), vec.cend(), vec.size());
   }
 }
 
