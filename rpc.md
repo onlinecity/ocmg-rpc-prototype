@@ -6,7 +6,7 @@ Also protobuf is optional, fundamental types such as int32 may be returned in th
 ## Basic format
 We use ZMQ multi-part messages, and optional protobuf encoding for data exchange between Client and Server.
 
-All communication happens via ZMQ Request-Reply TCP-sockets. Servers must be bound on a specified port: <https://github.com/onlinecity/ocmg-lib/blob/master/docs/ports.md>
+All communication happens via ZMQ Request-Reply TCP-sockets.
 
 For reliability we stick to Client-Side Reliability, also known as "[Lazy Pirate Pattern](http://zguide.zeromq.org/page:all#Client-Side-Reliability-Lazy-Pirate-Pattern)" for now. This means that the client must enforce timeouts and re-attempt to send a message if it fails.
 
