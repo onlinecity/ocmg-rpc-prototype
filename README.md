@@ -6,11 +6,11 @@ Although it says prototype, it's almost ready for use. Experienced programmers c
 
 ##### Protocol
 
-See rpc.md for details.
+See [`rpc.md`](rpc.md) for details.
 
 #### How to run
 
-Install deps: CMake, protobuf, glags, glog and ZMQ using your favorite package manager. C++11 compiler required.
+Install deps: CMake, protobuf, gflags, glog and ZMQ using your favorite package manager. C++11 compiler required.
 
 Compile:
 
